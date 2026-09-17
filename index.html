@@ -58,10 +58,41 @@
     color: var(--cm-muted);
   }
 
+  /* ---- Abas de categoria ---- */
+  .category-tabs {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 16px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .category-tabs::-webkit-scrollbar { display: none; }
+  .category-tab {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1.5px solid #E9D9CE;
+    background: #FFFFFF;
+    color: var(--cm-muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+    white-space: nowrap;
+  }
+  .category-tab.active {
+    background: var(--cm-red);
+    border-color: var(--cm-red);
+    color: #fff;
+  }
+
   /* ---- Carrossel ---- */
   .carousel-wrap {
     flex-shrink: 0;
-    padding: 14px 0 10px;
+    padding: 10px 0 10px;
   }
   .carousel {
     display: flex;
@@ -97,6 +128,12 @@
     justify-content: center;
     font-size: 44px;
     background: linear-gradient(135deg, #FFEFE6, #FFDFCF);
+    overflow: hidden;
+  }
+  .card .emoji img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .card .info {
     padding: 10px 10px 12px;
@@ -107,11 +144,21 @@
     line-height: 1.25;
     min-height: 32px;
   }
+  .card .desc {
+    font-size: 10.5px;
+    color: var(--cm-muted);
+    line-height: 1.3;
+    margin-top: 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
   .card .price {
     font-size: 12px;
     color: var(--cm-red-dark);
     font-weight: 600;
-    margin-top: 2px;
+    margin-top: 6px;
   }
   .card .price small {
     color: var(--cm-muted);
@@ -370,6 +417,8 @@
     </div>
   </header>
 
+  <div class="category-tabs" id="categoryTabs"></div>
+
   <div class="carousel-wrap">
     <div class="carousel" id="carousel"></div>
   </div>
@@ -400,15 +449,34 @@
 
 <script>
 /* ==========================================================
-   CATÁLOGO — placeholder. Quando o back office da Coração de
-   Minas existir, isso vem de uma API real (preço cadastrado
-   pela cliente por produto), não fica hardcoded aqui.
+   CATÁLOGO — mocado a partir da planilha da cliente (Google Sheets,
+   17/09/2026). Quando o back office existir, isso vem de uma API
+   real; até lá, atualizar aqui manualmente a cada mudança na planilha.
+
+   Nota: a planilha só tem UM preço por produto (sem distinção
+   varejo/atacado ainda) — uso o mesmo valor pros dois modos até a
+   cliente definir preço fechado B2B. `image: null` = a planilha não
+   tinha foto desse produto ainda, cai no emoji de fallback da categoria.
    ========================================================== */
+const CATEGORIES = [
+  { id: "mini-pizza", name: "Mini Pizza", fallbackEmoji: "🍕" },
+  { id: "massas-pizzas", name: "Massas Pizzas", fallbackEmoji: "🥟" },
+  { id: "pao-de-queijo", name: "Pão de Queijo", fallbackEmoji: "🧀" },
+];
+
 const CATALOG = [
-  { id: "pdq",     name: "Pão de queijo tradicional (500g)", emoji: "🧀", priceVarejo: 22.90, priceAtacado: 16.90 },
-  { id: "biscoito",name: "Biscoito de queijo (300g)",          emoji: "🍪", priceVarejo: 18.50, priceAtacado: 13.20 },
-  { id: "pizza",   name: "Mini pizza (4un)",                   emoji: "🍕", priceVarejo: 27.00, priceAtacado: 19.90 },
-  { id: "combo",   name: "Combo degustação",                   emoji: "🎁", priceVarejo: 45.00, priceAtacado: 32.00 },
+  { id: "mp-calabresa-provolone", category: "mini-pizza", name: "Calabresa com Provolone", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, calabresa e provolone.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181151_WlS1_f.png" },
+  { id: "mp-frango-milho", category: "mini-pizza", name: "Frango com Milho", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, frango e milho.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101221025_EwAX_f.png" },
+  { id: "mp-marguerita", category: "mini-pizza", name: "Marguerita", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, tomate e manjericão.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181355_fIZP_f.png" },
+  { id: "mp-mucarela-provolone", category: "mini-pizza", name: "Muçarela com Provolone", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela e queijo provolone.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181400_TdBD_f.png" },
+  { id: "mp-calabresa-bacon", category: "mini-pizza", name: "Calabresa com Bacon", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, calabresa e bacon.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181346_zUKN_f.png" },
+  { id: "mp-calabresa-pimentao", category: "mini-pizza", name: "Calabresa à Moda Pimentão", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, calabresa, cebola e pimentão.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202306051515_PPV1_i.jpg" },
+  { id: "mp-presunto-provolone", category: "mini-pizza", name: "Presunto com Provolone", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, presunto e provolone.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181350_laJ1_f.png" },
+  { id: "mp-presunto-bacon", category: "mini-pizza", name: "Presunto com Bacon", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, presunto e bacon.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181351_x7In_f.png" },
+  { id: "mzp-massa-mini-pizza", category: "massas-pizzas", name: "Massa Mini Pizza", desc: "Disco de massa mini pizza, unidade.", price: 1.50, image: null },
+  { id: "pdq-lanchinho-gourmet", category: "pao-de-queijo", name: "Pão de Queijo Lanchinho Gourmet", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 50g, ideal pra rechear.", price: 17.00, image: null },
+  { id: "pdq-lanchao", category: "pao-de-queijo", name: "Pão de Queijo Lanchão", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 70g, tamanho de lanchonete.", price: 34.00, image: null },
+  { id: "pdq-tradicional-400", category: "pao-de-queijo", name: "Pão de Queijo Tradicional 400g", desc: "Pão de queijo feito à base de fécula de mandioca e polvilho, queijos variados, sabor mais leve.", price: 6.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202307121749_QrVQ_.jpeg" },
 ];
 
 const MIN_QTY_ATACADO = 20; // regra de negócio já definida com a Skalo (pedido mínimo B2B)
@@ -423,9 +491,14 @@ document.getElementById("modeLabel").textContent = isAtacado
 document.getElementById("totalLabel").textContent = isAtacado ? "Total (atacado)" : "Total";
 
 const cart = {}; // { id: qty }
+let activeCategory = CATEGORIES[0].id;
+
+function categoryOf(product) {
+  return CATEGORIES.find((c) => c.id === product.category);
+}
 
 function priceFor(product) {
-  return isAtacado ? product.priceAtacado : product.priceVarejo;
+  return product.price;
 }
 
 function formatBRL(value) {
@@ -440,17 +513,32 @@ function totalValue() {
   return CATALOG.reduce((sum, p) => sum + (cart[p.id] || 0) * priceFor(p), 0);
 }
 
+function renderTabs() {
+  const el = document.getElementById("categoryTabs");
+  el.innerHTML = "";
+  CATEGORIES.forEach((c) => {
+    const btn = document.createElement("button");
+    btn.className = "category-tab" + (c.id === activeCategory ? " active" : "");
+    btn.dataset.category = c.id;
+    btn.textContent = c.name;
+    el.appendChild(btn);
+  });
+}
+
 function renderCarousel() {
   const el = document.getElementById("carousel");
   el.innerHTML = "";
-  CATALOG.forEach((p) => {
+  const items = CATALOG.filter((p) => p.category === activeCategory);
+  items.forEach((p) => {
     const qty = cart[p.id] || 0;
+    const cat = categoryOf(p);
     const card = document.createElement("div");
     card.className = "card" + (qty > 0 ? " in-cart" : "");
     card.innerHTML = `
-      <div class="emoji">${p.emoji}</div>
+      <div class="emoji">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : cat.fallbackEmoji}</div>
       <div class="info">
         <div class="name">${p.name}</div>
+        <div class="desc" title="${p.desc}">${p.desc}</div>
         <div class="price">${formatBRL(priceFor(p))} <small>${isAtacado ? "/un (fechado)" : "/un"}</small></div>
         <div class="stepper">
           <button data-action="dec" data-id="${p.id}" ${qty === 0 ? "disabled" : ""}>−</button>
@@ -473,10 +561,14 @@ function renderCart() {
     listEl.innerHTML = items.map((p) => {
       const qty = cart[p.id];
       const subtotal = qty * priceFor(p);
+      const cat = categoryOf(p);
+      const thumb = p.image
+        ? `<img src="${p.image}" alt="${p.name}" style="width:22px;height:22px;border-radius:6px;object-fit:cover;">`
+        : `<span class="emoji-sm">${cat.fallbackEmoji}</span>`;
       return `
         <div class="cart-item">
           <div class="left">
-            <span class="emoji-sm">${p.emoji}</span>
+            ${thumb}
             <div>
               <div class="name">${p.name}</div>
               <div class="unit">${qty}x ${formatBRL(priceFor(p))}</div>
@@ -509,11 +601,21 @@ function renderCart() {
 }
 
 function renderAll() {
+  renderTabs();
   renderCarousel();
   renderCart();
 }
 
 let locked = false; // trava a interação depois de "Concluir carrinho" pra evitar editar de novo
+
+document.getElementById("categoryTabs").addEventListener("click", (e) => {
+  if (locked) return;
+  const btn = e.target.closest("button[data-category]");
+  if (!btn) return;
+  activeCategory = btn.dataset.category;
+  renderTabs();
+  renderCarousel();
+});
 
 document.getElementById("carousel").addEventListener("click", (e) => {
   if (locked) return;
