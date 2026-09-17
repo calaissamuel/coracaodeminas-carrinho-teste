@@ -273,6 +273,91 @@
     opacity: 0.7;
     z-index: 99;
   }
+
+  /* ---- Tela de sucesso ---- */
+  .success-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--cm-cream);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 24px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
+  .success-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .success-check {
+    width: 84px;
+    height: 84px;
+  }
+  .success-check circle {
+    fill: none;
+    stroke: var(--cm-red);
+    stroke-width: 3;
+    stroke-dasharray: 240;
+    stroke-dashoffset: 240;
+    transform-origin: center;
+  }
+  .success-check path {
+    fill: none;
+    stroke: var(--cm-red);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+  }
+  .success-overlay.show .success-check circle {
+    animation: draw-circle .5s ease forwards;
+  }
+  .success-overlay.show .success-check path {
+    animation: draw-check .3s ease forwards .45s;
+  }
+  @keyframes draw-circle {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes draw-check {
+    to { stroke-dashoffset: 0; }
+  }
+  .success-overlay h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--cm-red-dark);
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .success-overlay p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--cm-muted);
+    max-width: 260px;
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .success-overlay.show h2,
+  .success-overlay.show p {
+    animation: fade-up .35s ease forwards .55s;
+  }
+  .success-overlay.show p {
+    animation-delay: .68s;
+  }
+  @keyframes fade-up {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .success-check circle, .success-check path { animation: none !important; stroke-dashoffset: 0 !important; }
+    .success-overlay h2, .success-overlay p { animation: none !important; opacity: 1 !important; transform: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -302,6 +387,15 @@
     </div>
     <button class="confirm-btn" id="confirmBtn" disabled>Concluir carrinho</button>
   </footer>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <svg class="success-check" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="36"></circle>
+    <path d="M24 41 L35 52 L57 28"></path>
+  </svg>
+  <h2>Carrinho concluído com sucesso!</h2>
+  <p>Já anotamos seu pedido. Voltando pra conversa...</p>
 </div>
 
 <script>
@@ -419,7 +513,10 @@ function renderAll() {
   renderCart();
 }
 
+let locked = false; // trava a interação depois de "Concluir carrinho" pra evitar editar de novo
+
 document.getElementById("carousel").addEventListener("click", (e) => {
+  if (locked) return;
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
   const id = btn.dataset.id;
@@ -431,13 +528,19 @@ document.getElementById("carousel").addEventListener("click", (e) => {
 });
 
 document.getElementById("cartList").addEventListener("click", (e) => {
+  if (locked) return;
   const btn = e.target.closest("button[data-action='remove']");
   if (!btn) return;
   delete cart[btn.dataset.id];
   renderAll();
 });
 
+const SUCCESS_ANIMATION_MS = 1400; // tempo pra animação de check + texto terminarem de rodar
+
 document.getElementById("confirmBtn").addEventListener("click", () => {
+  if (locked) return;
+  locked = true;
+
   const items = CATALOG.filter((p) => (cart[p.id] || 0) > 0).map((p) => ({
     id: p.id,
     nome: p.name,
@@ -455,13 +558,18 @@ document.getElementById("confirmBtn").addEventListener("click", () => {
 
   const message = { name: "cartCompleted", data: JSON.stringify(payload) };
 
-  if (window.parent && window.parent !== window) {
-    window.parent.postMessage(message, "*");
-  } else {
-    // Modo pré-visualização (aberto fora do Typebot) — só loga no console
-    console.log("[preview] postMessage que seria enviado:", message);
-    alert("Pré-visualização: carrinho concluído.\n\n" + JSON.stringify(payload, null, 2));
-  }
+  // Mostra a animação de sucesso e só então avisa o Typebot —
+  // assim o usuário não consegue voltar pra editar o carrinho.
+  document.getElementById("successOverlay").classList.add("show");
+
+  setTimeout(() => {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(message, "*");
+    } else {
+      // Modo pré-visualização (aberto fora do Typebot) — só loga no console
+      console.log("[preview] postMessage que seria enviado:", message);
+    }
+  }, SUCCESS_ANIMATION_MS);
 });
 
 // Marca visual de que está em modo preview (fora de um iframe)
