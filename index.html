@@ -157,6 +157,7 @@
   /* ---- Carrinho ---- */
   .cart-section {
     flex: 1;
+    min-height: 0; /* crítico: sem isso o flex item não encolhe e empurra o rodapé pra fora do iframe */
     overflow-y: auto;
     padding: 4px 16px 8px;
     border-top: 1px solid #F0E4DC;
