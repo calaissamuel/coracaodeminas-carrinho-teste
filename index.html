@@ -35,11 +35,18 @@
   header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     padding: 12px 16px;
     background: #FFFFFF;
     border-bottom: 1px solid #F0E4DC;
     flex-shrink: 0;
+  }
+  header .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
   }
   header img {
     width: 36px;
@@ -47,6 +54,7 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--cm-red);
+    flex-shrink: 0;
   }
   header .title {
     font-weight: 600;
@@ -57,6 +65,47 @@
     font-size: 12px;
     color: var(--cm-muted);
   }
+
+  /* ---- Botão da sacola (header) ---- */
+  .bag-btn {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: var(--cm-cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s ease, transform .12s ease;
+  }
+  .bag-btn:active { transform: scale(0.94); }
+  .bag-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--cm-red-dark);
+  }
+  .bag-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--cm-red);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 2px solid #fff;
+  }
+  .bag-badge[hidden] { display: none; }
 
   /* ---- Abas de categoria ---- */
   .category-tabs {
@@ -321,6 +370,49 @@
     z-index: 99;
   }
 
+  /* ---- Painel da sacola ---- */
+  .bag-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--cm-cream);
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .28s cubic-bezier(.32,.72,0,1);
+  }
+  .bag-overlay.show {
+    transform: translateY(0);
+  }
+  .bag-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #F0E4DC;
+  }
+  .bag-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .bag-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--cm-cream);
+    color: var(--cm-text);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bag-close:active { transform: scale(0.92); }
+
   /* ---- Tela de sucesso ---- */
   .success-overlay {
     position: fixed;
@@ -410,11 +502,20 @@
 <body>
 <div id="app">
   <header>
-    <img src="https://static.ifood-static.com.br/image/upload/t_thumbnail/logosgde/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181106_KrvG_i.jpg" alt="Coração de Minas">
-    <div>
-      <div class="title">Coração de Minas</div>
-      <div class="subtitle" id="modeLabel">Monte seu pedido</div>
+    <div class="brand">
+      <img src="https://static.ifood-static.com.br/image/upload/t_thumbnail/logosgde/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181106_KrvG_i.jpg" alt="Coração de Minas">
+      <div>
+        <div class="title">Coração de Minas</div>
+        <div class="subtitle" id="modeLabel">Monte seu pedido</div>
+      </div>
     </div>
+    <button class="bag-btn" id="bagBtn" aria-label="Ver sacola">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8h12l-1 12H7L6 8Z"></path>
+        <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+      </svg>
+      <span class="bag-badge" id="bagBadge" hidden>0</span>
+    </button>
   </header>
 
   <div class="category-tabs" id="categoryTabs"></div>
@@ -422,10 +523,16 @@
   <div class="carousel-wrap">
     <div class="carousel" id="carousel"></div>
   </div>
+</div>
+
+<div class="bag-overlay" id="bagOverlay">
+  <div class="bag-header">
+    <h2>Sua Sacola</h2>
+    <button class="bag-close" id="bagCloseBtn" aria-label="Fechar sacola">✕</button>
+  </div>
 
   <div class="cart-section">
-    <h3>Seu carrinho</h3>
-    <div id="cartList"><div class="empty-cart">Nenhum item ainda — escolhe algo ali em cima 👆</div></div>
+    <div id="cartList"><div class="empty-cart">Sua sacola está vazia — escolhe algo ali em cima 👆</div></div>
   </div>
 
   <footer>
@@ -434,7 +541,7 @@
       <span class="label" id="totalLabel">Total</span>
       <span class="value" id="totalValue">R$ 0,00</span>
     </div>
-    <button class="confirm-btn" id="confirmBtn" disabled>Concluir carrinho</button>
+    <button class="confirm-btn" id="confirmBtn" disabled>Concluir sacola</button>
   </footer>
 </div>
 
@@ -443,7 +550,7 @@
     <circle cx="40" cy="40" r="36"></circle>
     <path d="M24 41 L35 52 L57 28"></path>
   </svg>
-  <h2>Carrinho concluído com sucesso!</h2>
+  <h2>Sacola concluída com sucesso!</h2>
   <p>Já anotamos seu pedido. Voltando pra conversa...</p>
 </div>
 
@@ -556,7 +663,7 @@ function renderCart() {
   const items = CATALOG.filter((p) => (cart[p.id] || 0) > 0);
 
   if (items.length === 0) {
-    listEl.innerHTML = '<div class="empty-cart">Nenhum item ainda — escolhe algo ali em cima 👆</div>';
+    listEl.innerHTML = '<div class="empty-cart">Sua sacola está vazia — escolhe algo ali em cima 👆</div>';
   } else {
     listEl.innerHTML = items.map((p) => {
       const qty = cart[p.id];
@@ -600,13 +707,29 @@ function renderCart() {
   }
 }
 
+function renderBadge() {
+  const badge = document.getElementById("bagBadge");
+  const qty = totalQty();
+  badge.textContent = qty;
+  badge.hidden = qty === 0;
+}
+
 function renderAll() {
   renderTabs();
   renderCarousel();
   renderCart();
+  renderBadge();
 }
 
-let locked = false; // trava a interação depois de "Concluir carrinho" pra evitar editar de novo
+let locked = false; // trava a interação depois de "Concluir sacola" pra evitar editar de novo
+
+document.getElementById("bagBtn").addEventListener("click", () => {
+  document.getElementById("bagOverlay").classList.add("show");
+});
+
+document.getElementById("bagCloseBtn").addEventListener("click", () => {
+  document.getElementById("bagOverlay").classList.remove("show");
+});
 
 document.getElementById("categoryTabs").addEventListener("click", (e) => {
   if (locked) return;
