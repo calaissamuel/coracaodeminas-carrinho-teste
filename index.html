@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coração de Minas — Carrinho</title>
+<title>Coração de Minas — Sacola</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cm-red: #C72020;
-    --cm-red-dark: #9E1919;
-    --cm-cream: #FFF8F0;
-    --cm-text: #2B1B12;
-    --cm-muted: #8A7B70;
+    --cm-red: #C81C18;
+    --cm-cream: #FDF7EE;
+    --cm-text: #363636;
+    --cm-muted: #727272;
+    --cm-border: #EDEDED;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -35,22 +35,15 @@
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 16px;
+    gap: 8px;
+    padding: 14px 20px;
     background: #FFFFFF;
-    border-bottom: 1px solid #F0E4DC;
+    box-shadow: 0px 1px 0px 0px var(--cm-border);
     flex-shrink: 0;
   }
-  header .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
   header img {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--cm-red);
@@ -58,79 +51,41 @@
   }
   header .title {
     font-weight: 600;
-    font-size: 15px;
-    line-height: 1.2;
+    font-size: 14px;
+    line-height: 1.3;
   }
   header .subtitle {
-    font-size: 12px;
-    color: var(--cm-muted);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--cm-text);
   }
 
-  /* ---- Botão da sacola (header) ---- */
-  .bag-btn {
-    position: relative;
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background: var(--cm-cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background .15s ease, transform .12s ease;
-  }
-  .bag-btn:active { transform: scale(0.94); }
-  .bag-btn svg {
-    width: 20px;
-    height: 20px;
-    stroke: var(--cm-red-dark);
-  }
-  .bag-badge {
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
-    border-radius: 999px;
-    background: var(--cm-red);
-    color: #fff;
-    font-size: 10.5px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    border: 2px solid #fff;
-  }
-  .bag-badge[hidden] { display: none; }
-
-  /* ---- Abas de categoria ---- */
+  /* ---- Abas de categoria (filters) ---- */
   .category-tabs {
     flex-shrink: 0;
     display: flex;
     gap: 8px;
+    align-items: center;
+    height: 60px;
     overflow-x: auto;
-    padding: 10px 16px 0;
+    padding: 0 16px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .category-tabs::-webkit-scrollbar { display: none; }
   .category-tab {
     flex: 0 0 auto;
-    padding: 7px 14px;
-    border-radius: 999px;
-    border: 1.5px solid #E9D9CE;
+    padding: 8px 10px;
+    border-radius: 999999px;
+    border: 1px solid var(--cm-border);
     background: #FFFFFF;
     color: var(--cm-muted);
     font-family: inherit;
-    font-size: 12.5px;
+    font-size: 10px;
     font-weight: 600;
     cursor: pointer;
-    transition: background .15s ease, color .15s ease, border-color .15s ease;
     white-space: nowrap;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
   }
   .category-tab.active {
     background: var(--cm-red);
@@ -138,80 +93,81 @@
     color: #fff;
   }
 
-  /* ---- Carrossel ---- */
-  .carousel-wrap {
-    flex-shrink: 0;
-    padding: 10px 0 10px;
+  /* ---- Grade de produtos (2 colunas) ---- */
+  .product-grid-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 16px 16px;
   }
-  .carousel {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 0 16px 8px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
-  .carousel::-webkit-scrollbar { height: 6px; }
-  .carousel::-webkit-scrollbar-thumb { background: var(--cm-red); border-radius: 3px; }
-  .carousel::-webkit-scrollbar-track { background: transparent; }
 
   .card {
-    flex: 0 0 auto;
-    scroll-snap-align: start;
-    width: 148px;
     background: #FFFFFF;
+    border: 1.3px solid var(--cm-border);
     border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    border: 2px solid transparent;
+    padding: 3px 3px 10px;
     overflow: hidden;
-    transition: border-color .15s ease, transform .15s ease;
+    transition: border-color .15s ease;
   }
   .card.in-cart {
-    border-color: var(--cm-red);
+    border: 2px solid var(--cm-red);
   }
-  .card .emoji {
+  .card .thumb {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: 118px;
+    border-radius: 13px 13px 0 0;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 44px;
+    font-size: 40px;
     background: linear-gradient(135deg, #FFEFE6, #FFDFCF);
-    overflow: hidden;
   }
-  .card .emoji img {
+  .card .thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
   .card .info {
-    padding: 10px 10px 12px;
+    padding: 8px 8px 0;
   }
   .card .name {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    line-height: 1.25;
-    min-height: 32px;
+    line-height: 1.3;
+    min-height: 31px;
   }
   .card .desc {
-    font-size: 10.5px;
-    color: var(--cm-muted);
-    line-height: 1.3;
-    margin-top: 2px;
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--cm-text);
+    line-height: 1.35;
+    margin-top: 5px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  .card .price-row {
+    display: flex;
+    align-items: baseline;
+    margin-top: 5px;
+  }
   .card .price {
     font-size: 12px;
-    color: var(--cm-red-dark);
-    font-weight: 600;
-    margin-top: 6px;
+    font-weight: 700;
+    color: var(--cm-red);
   }
-  .card .price small {
-    color: var(--cm-muted);
+  .card .unit {
+    font-size: 9px;
     font-weight: 400;
+    color: var(--cm-text);
+    margin-left: 4px;
   }
 
   .stepper {
@@ -221,114 +177,59 @@
     margin-top: 8px;
     background: var(--cm-cream);
     border-radius: 10px;
-    padding: 4px;
+    padding: 5px;
   }
   .stepper button {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     background: var(--cm-red);
     color: #fff;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: filter .12s ease, transform .12s ease;
+    transition: opacity .12s ease, transform .12s ease;
   }
   .stepper button:active { transform: scale(0.92); }
   .stepper button:disabled {
-    background: #E3D7CE;
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .stepper .qty {
-    font-weight: 600;
-    font-size: 13px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--cm-text);
     min-width: 20px;
     text-align: center;
-  }
-
-  /* ---- Carrinho ---- */
-  .cart-section {
-    flex: 1;
-    min-height: 0; /* crítico: sem isso o flex item não encolhe e empurra o rodapé pra fora do iframe */
-    overflow-y: auto;
-    padding: 4px 16px 8px;
-    border-top: 1px solid #F0E4DC;
-    background: #FFFFFF;
-  }
-  .cart-section h3 {
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--cm-muted);
-    margin: 12px 0 8px;
-  }
-  .empty-cart {
-    font-size: 13px;
-    color: var(--cm-muted);
-    padding: 16px 0;
-    text-align: center;
-  }
-  .cart-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #F5EBE3;
-    font-size: 13px;
-  }
-  .cart-item .left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .cart-item .left .emoji-sm { font-size: 18px; }
-  .cart-item .left .name { font-weight: 500; }
-  .cart-item .left .unit { color: var(--cm-muted); font-size: 11px; }
-  .cart-item .right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .cart-item .subtotal {
-    font-weight: 600;
-    min-width: 62px;
-    text-align: right;
-  }
-  .cart-item .remove {
-    border: none;
-    background: none;
-    color: var(--cm-muted);
-    font-size: 16px;
-    cursor: pointer;
-    padding: 2px 4px;
   }
 
   /* ---- Rodapé fixo ---- */
   footer {
     flex-shrink: 0;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    padding: 15px 16px calc(15px + env(safe-area-inset-bottom));
     background: #FFFFFF;
-    border-top: 1px solid #F0E4DC;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0px -5px 11px 0px rgba(0,0,0,0.04), 0px -21px 21px 0px rgba(0,0,0,0.03);
   }
   .totals-row {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
+    align-items: center;
+    margin-bottom: 12px;
   }
   .totals-row .label {
     font-size: 12px;
+    font-weight: 600;
     color: var(--cm-muted);
   }
   .totals-row .value {
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 700;
-    color: var(--cm-red-dark);
+    color: var(--cm-red);
   }
   .min-warning {
     font-size: 11.5px;
@@ -337,15 +238,65 @@
     display: none;
   }
   .min-warning.show { display: block; }
+
+  .confirm-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .bag-btn {
+    position: relative;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 999999px;
+    background: var(--cm-cream);
+    border: 1px solid var(--cm-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color .15s ease, transform .12s ease;
+  }
+  .bag-btn:active { transform: scale(0.94); }
+  .bag-btn[hidden] { display: none; }
+  .bag-btn.active {
+    border-color: var(--cm-red);
+  }
+  .bag-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--cm-red);
+  }
+  .bag-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--cm-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 2px solid #fff;
+  }
+  .bag-badge[hidden] { display: none; }
+
   .confirm-btn {
-    width: 100%;
-    padding: 13px;
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 12px;
+    border-radius: 999999px;
     background: var(--cm-red);
     color: #fff;
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: filter .15s ease, transform .1s ease;
@@ -370,18 +321,36 @@
     z-index: 99;
   }
 
-  /* ---- Painel da sacola ---- */
-  .bag-overlay {
+  /* ---- Sacola (bottom sheet) ---- */
+  .bag-scrim {
     position: fixed;
     inset: 0;
-    background: var(--cm-cream);
+    background: rgba(0,0,0,0.2);
+    z-index: 140;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+  }
+  .bag-scrim.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .bag-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 88vh;
+    background: #FFFFFF;
+    border-radius: 24px 24px 0 0;
     z-index: 150;
     display: flex;
     flex-direction: column;
+    box-shadow: 0px -21px 21px 0px rgba(0,0,0,0.03), 0px -5px 11px 0px rgba(0,0,0,0.04);
     transform: translateY(100%);
-    transition: transform .28s cubic-bezier(.32,.72,0,1);
+    transition: transform .3s cubic-bezier(.32,.72,0,1);
   }
-  .bag-overlay.show {
+  .bag-sheet.show {
     transform: translateY(0);
   }
   .bag-header {
@@ -389,29 +358,131 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
-    background: #FFFFFF;
-    border-bottom: 1px solid #F0E4DC;
+    padding: 16px;
   }
   .bag-header h2 {
     margin: 0;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cm-text);
   }
   .bag-close {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border: none;
-    border-radius: 50%;
-    background: var(--cm-cream);
+    background: none;
     color: var(--cm-text);
-    font-size: 15px;
+    font-size: 17px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
   }
-  .bag-close:active { transform: scale(0.92); }
+  .bag-close:active { transform: scale(0.9); }
+
+  .cart-section {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 16px;
+  }
+  .empty-cart {
+    font-size: 13px;
+    color: var(--cm-muted);
+    padding: 24px 0;
+    text-align: center;
+  }
+  .cart-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cm-border);
+    gap: 10px;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item .left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  .cart-item .left .row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cart-item .thumb-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .cart-item .thumb-sm-emoji {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background: linear-gradient(135deg, #FFEFE6, #FFDFCF);
+  }
+  .cart-item .name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--cm-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cart-item .mini-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 85px;
+    background: var(--cm-cream);
+    border-radius: 7.4px;
+    padding: 3.7px;
+  }
+  .cart-item .mini-stepper button {
+    width: 17px;
+    height: 17px;
+    border: none;
+    border-radius: 3.7px;
+    background: var(--cm-red);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cart-item .mini-stepper .qty {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--cm-text);
+  }
+  .cart-item .subtotal {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cm-text);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+
+  .sheet-footer {
+    flex-shrink: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--cm-border);
+  }
 
   /* ---- Tela de sucesso ---- */
   .success-overlay {
@@ -471,13 +542,14 @@
     margin: 0;
     font-size: 19px;
     font-weight: 700;
-    color: var(--cm-red-dark);
+    color: var(--cm-red);
     opacity: 0;
     transform: translateY(6px);
   }
   .success-overlay p {
     margin: 0;
     font-size: 13.5px;
+    font-weight: 400;
     color: var(--cm-muted);
     max-width: 260px;
     opacity: 0;
@@ -502,32 +574,42 @@
 <body>
 <div id="app">
   <header>
-    <div class="brand">
-      <img src="https://static.ifood-static.com.br/image/upload/t_thumbnail/logosgde/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181106_KrvG_i.jpg" alt="Coração de Minas">
-      <div>
-        <div class="title">Coração de Minas</div>
-        <div class="subtitle" id="modeLabel">Monte seu pedido</div>
-      </div>
+    <img src="https://static.ifood-static.com.br/image/upload/t_thumbnail/logosgde/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181106_KrvG_i.jpg" alt="Coração de Minas">
+    <div>
+      <div class="title">Coração de Minas</div>
+      <div class="subtitle" id="modeLabel">Monte seu pedido</div>
     </div>
-    <button class="bag-btn" id="bagBtn" aria-label="Ver sacola">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 8h12l-1 12H7L6 8Z"></path>
-        <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
-      </svg>
-      <span class="bag-badge" id="bagBadge" hidden>0</span>
-    </button>
   </header>
 
   <div class="category-tabs" id="categoryTabs"></div>
 
-  <div class="carousel-wrap">
-    <div class="carousel" id="carousel"></div>
+  <div class="product-grid-wrap">
+    <div class="product-grid" id="productGrid"></div>
   </div>
+
+  <footer>
+    <div class="min-warning" id="minWarning"></div>
+    <div class="totals-row">
+      <span class="label" id="totalLabel">Total</span>
+      <span class="value" id="totalValue">R$ 00,00</span>
+    </div>
+    <div class="confirm-row">
+      <button class="bag-btn" id="bagBtnMain" aria-label="Ver sacola" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8h12l-1 12H7L6 8Z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <span class="bag-badge" id="bagBadge" hidden>0</span>
+      </button>
+      <button class="confirm-btn" id="confirmBtnMain" disabled>Concluir sacola</button>
+    </div>
+  </footer>
 </div>
 
-<div class="bag-overlay" id="bagOverlay">
+<div class="bag-scrim" id="bagScrim"></div>
+<div class="bag-sheet" id="bagSheet">
   <div class="bag-header">
-    <h2>Sua Sacola</h2>
+    <h2>Sua sacola</h2>
     <button class="bag-close" id="bagCloseBtn" aria-label="Fechar sacola">✕</button>
   </div>
 
@@ -535,14 +617,22 @@
     <div id="cartList"><div class="empty-cart">Sua sacola está vazia — escolhe algo ali em cima 👆</div></div>
   </div>
 
-  <footer>
-    <div class="min-warning" id="minWarning"></div>
+  <div class="sheet-footer">
+    <div class="min-warning" id="minWarningSheet"></div>
     <div class="totals-row">
-      <span class="label" id="totalLabel">Total</span>
-      <span class="value" id="totalValue">R$ 0,00</span>
+      <span class="label">Total</span>
+      <span class="value" id="totalValueSheet">R$ 00,00</span>
     </div>
-    <button class="confirm-btn" id="confirmBtn" disabled>Concluir sacola</button>
-  </footer>
+    <div class="confirm-row">
+      <button class="bag-btn active" id="bagBtnSheet" aria-label="Fechar sacola">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8h12l-1 12H7L6 8Z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+      </button>
+      <button class="confirm-btn" id="confirmBtnSheet" disabled>Concluir sacola</button>
+    </div>
+  </div>
 </div>
 
 <div class="success-overlay" id="successOverlay">
@@ -560,18 +650,22 @@
    17/09/2026). Quando o back office existir, isso vem de uma API
    real; até lá, atualizar aqui manualmente a cada mudança na planilha.
 
+   Categorias e ordem seguem o design do Figma (nó 12:5).
    Nota: a planilha só tem UM preço por produto (sem distinção
    varejo/atacado ainda) — uso o mesmo valor pros dois modos até a
    cliente definir preço fechado B2B. `image: null` = a planilha não
    tinha foto desse produto ainda, cai no emoji de fallback da categoria.
    ========================================================== */
 const CATEGORIES = [
-  { id: "mini-pizza", name: "Mini Pizza", fallbackEmoji: "🍕" },
-  { id: "massas-pizzas", name: "Massas Pizzas", fallbackEmoji: "🥟" },
   { id: "pao-de-queijo", name: "Pão de Queijo", fallbackEmoji: "🧀" },
+  { id: "mini-pizza", name: "Mini Pizzas", fallbackEmoji: "🍕" },
+  { id: "massas-pizzas", name: "Massas", fallbackEmoji: "🥟" },
 ];
 
 const CATALOG = [
+  { id: "pdq-lanchinho-gourmet", category: "pao-de-queijo", name: "Pão de Queijo Lanchinho Gourmet", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 50g, ideal pra rechear.", price: 17.00, image: null },
+  { id: "pdq-lanchao", category: "pao-de-queijo", name: "Pão de Queijo Lanchão", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 70g, tamanho de lanchonete.", price: 34.00, image: null },
+  { id: "pdq-tradicional-400", category: "pao-de-queijo", name: "Pão de Queijo Tradicional 400g", desc: "Pão de queijo feito à base de fécula de mandioca e polvilho, queijos variados, sabor mais leve.", price: 6.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202307121749_QrVQ_.jpeg" },
   { id: "mp-calabresa-provolone", category: "mini-pizza", name: "Calabresa com Provolone", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, calabresa e provolone.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181151_WlS1_f.png" },
   { id: "mp-frango-milho", category: "mini-pizza", name: "Frango com Milho", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, frango e milho.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101221025_EwAX_f.png" },
   { id: "mp-marguerita", category: "mini-pizza", name: "Marguerita", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, tomate e manjericão.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181355_fIZP_f.png" },
@@ -581,9 +675,6 @@ const CATALOG = [
   { id: "mp-presunto-provolone", category: "mini-pizza", name: "Presunto com Provolone", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, presunto e provolone.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181350_laJ1_f.png" },
   { id: "mp-presunto-bacon", category: "mini-pizza", name: "Presunto com Bacon", desc: "Bandeja com 10 unidades congelada, massa (farinha de trigo, óleo de soja, sal, açúcar, fermento e água), muçarela, presunto e bacon.", price: 20.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202101181351_x7In_f.png" },
   { id: "mzp-massa-mini-pizza", category: "massas-pizzas", name: "Massa Mini Pizza", desc: "Disco de massa mini pizza, unidade.", price: 1.50, image: null },
-  { id: "pdq-lanchinho-gourmet", category: "pao-de-queijo", name: "Pão de Queijo Lanchinho Gourmet", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 50g, ideal pra rechear.", price: 17.00, image: null },
-  { id: "pdq-lanchao", category: "pao-de-queijo", name: "Pão de Queijo Lanchão", desc: "Pão de queijo feito à base de polvilho, queijos variados e provolone, sabor mais acentuado de queijo. Bola de 70g, tamanho de lanchonete.", price: 34.00, image: null },
-  { id: "pdq-tradicional-400", category: "pao-de-queijo", name: "Pão de Queijo Tradicional 400g", desc: "Pão de queijo feito à base de fécula de mandioca e polvilho, queijos variados, sabor mais leve.", price: 6.00, image: "https://static.ifood-static.com.br/image/upload/t_medium/pratos/b6c507db-bc7f-420e-9d54-b196139ded5f/202307121749_QrVQ_.jpeg" },
 ];
 
 const MIN_QTY_ATACADO = 20; // regra de negócio já definida com a Skalo (pedido mínimo B2B)
@@ -595,10 +686,10 @@ const isAtacado = mode === "atacado";
 document.getElementById("modeLabel").textContent = isAtacado
   ? "Preço fechado no atacado"
   : "Monte seu pedido";
-document.getElementById("totalLabel").textContent = isAtacado ? "Total (atacado)" : "Total";
 
 const cart = {}; // { id: qty }
 let activeCategory = CATEGORIES[0].id;
+let sheetOpen = false;
 
 function categoryOf(product) {
   return CATEGORIES.find((c) => c.id === product.category);
@@ -632,8 +723,8 @@ function renderTabs() {
   });
 }
 
-function renderCarousel() {
-  const el = document.getElementById("carousel");
+function renderGrid() {
+  const el = document.getElementById("productGrid");
   el.innerHTML = "";
   const items = CATALOG.filter((p) => p.category === activeCategory);
   items.forEach((p) => {
@@ -642,11 +733,14 @@ function renderCarousel() {
     const card = document.createElement("div");
     card.className = "card" + (qty > 0 ? " in-cart" : "");
     card.innerHTML = `
-      <div class="emoji">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : cat.fallbackEmoji}</div>
+      <div class="thumb">${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : cat.fallbackEmoji}</div>
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="desc" title="${p.desc}">${p.desc}</div>
-        <div class="price">${formatBRL(priceFor(p))} <small>${isAtacado ? "/un (fechado)" : "/un"}</small></div>
+        <div class="price-row">
+          <span class="price">${formatBRL(priceFor(p))}</span>
+          <span class="unit">${isAtacado ? "/un (fechado)" : "/pacote"}</span>
+        </div>
         <div class="stepper">
           <button data-action="dec" data-id="${p.id}" ${qty === 0 ? "disabled" : ""}>−</button>
           <span class="qty">${qty}</span>
@@ -658,77 +752,112 @@ function renderCarousel() {
   });
 }
 
-function renderCart() {
+function renderCartList() {
   const listEl = document.getElementById("cartList");
   const items = CATALOG.filter((p) => (cart[p.id] || 0) > 0);
 
   if (items.length === 0) {
     listEl.innerHTML = '<div class="empty-cart">Sua sacola está vazia — escolhe algo ali em cima 👆</div>';
-  } else {
-    listEl.innerHTML = items.map((p) => {
-      const qty = cart[p.id];
-      const subtotal = qty * priceFor(p);
-      const cat = categoryOf(p);
-      const thumb = p.image
-        ? `<img src="${p.image}" alt="${p.name}" style="width:22px;height:22px;border-radius:6px;object-fit:cover;">`
-        : `<span class="emoji-sm">${cat.fallbackEmoji}</span>`;
-      return `
-        <div class="cart-item">
-          <div class="left">
+    return;
+  }
+
+  listEl.innerHTML = items.map((p) => {
+    const qty = cart[p.id];
+    const subtotal = qty * priceFor(p);
+    const cat = categoryOf(p);
+    const thumb = p.image
+      ? `<img class="thumb-sm" src="${p.image}" alt="${p.name}">`
+      : `<span class="thumb-sm-emoji">${cat.fallbackEmoji}</span>`;
+    return `
+      <div class="cart-item">
+        <div class="left">
+          <div class="row">
             ${thumb}
-            <div>
-              <div class="name">${p.name}</div>
-              <div class="unit">${qty}x ${formatBRL(priceFor(p))}</div>
-            </div>
+            <span class="name">${p.name}</span>
           </div>
-          <div class="right">
-            <span class="subtotal">${formatBRL(subtotal)}</span>
-            <button class="remove" data-action="remove" data-id="${p.id}" title="Remover">✕</button>
+          <div class="mini-stepper">
+            <button data-action="dec" data-id="${p.id}">−</button>
+            <span class="qty">${qty}</span>
+            <button data-action="inc" data-id="${p.id}">+</button>
           </div>
         </div>
-      `;
-    }).join("");
-  }
+        <span class="subtotal">${formatBRL(subtotal)}</span>
+      </div>
+    `;
+  }).join("");
+}
 
+function renderTotals() {
   const total = totalValue();
   const qtySum = totalQty();
-  document.getElementById("totalValue").textContent = formatBRL(total);
+  const totalText = formatBRL(total).replace("R$ ", "R$ ");
 
-  const warningEl = document.getElementById("minWarning");
-  const confirmBtn = document.getElementById("confirmBtn");
+  document.getElementById("totalValue").textContent = totalText;
+  document.getElementById("totalValueSheet").textContent = totalText;
 
-  if (isAtacado && qtySum > 0 && qtySum < MIN_QTY_ATACADO) {
-    warningEl.textContent = `Pedido mínimo no atacado: ${MIN_QTY_ATACADO} unidades (você tem ${qtySum}).`;
-    warningEl.classList.add("show");
-    confirmBtn.disabled = true;
-  } else {
-    warningEl.classList.remove("show");
-    confirmBtn.disabled = qtySum === 0;
-  }
+  const overMin = !isAtacado || qtySum === 0 || qtySum >= MIN_QTY_ATACADO;
+  const warningText = isAtacado && qtySum > 0 && qtySum < MIN_QTY_ATACADO
+    ? `Pedido mínimo no atacado: ${MIN_QTY_ATACADO} unidades (você tem ${qtySum}).`
+    : "";
+
+  [document.getElementById("minWarning"), document.getElementById("minWarningSheet")].forEach((el) => {
+    el.textContent = warningText;
+    el.classList.toggle("show", Boolean(warningText));
+  });
+
+  const shouldDisable = qtySum === 0 || !overMin;
+  document.getElementById("confirmBtnMain").disabled = shouldDisable;
+  document.getElementById("confirmBtnSheet").disabled = shouldDisable;
 }
 
 function renderBadge() {
-  const badge = document.getElementById("bagBadge");
   const qty = totalQty();
+  const badge = document.getElementById("bagBadge");
   badge.textContent = qty;
   badge.hidden = qty === 0;
+  document.getElementById("bagBtnMain").hidden = qty === 0;
 }
 
 function renderAll() {
   renderTabs();
-  renderCarousel();
-  renderCart();
+  renderGrid();
+  renderCartList();
+  renderTotals();
   renderBadge();
 }
 
 let locked = false; // trava a interação depois de "Concluir sacola" pra evitar editar de novo
 
-document.getElementById("bagBtn").addEventListener("click", () => {
-  document.getElementById("bagOverlay").classList.add("show");
+function openSheet() {
+  sheetOpen = true;
+  document.getElementById("bagScrim").classList.add("show");
+  document.getElementById("bagSheet").classList.add("show");
+}
+
+function closeSheet() {
+  sheetOpen = false;
+  document.getElementById("bagScrim").classList.remove("show");
+  document.getElementById("bagSheet").classList.remove("show");
+}
+
+document.getElementById("bagBtnMain").addEventListener("click", () => {
+  if (locked) return;
+  openSheet();
+});
+
+document.getElementById("bagBtnSheet").addEventListener("click", () => {
+  if (locked) return;
+  closeSheet();
 });
 
 document.getElementById("bagCloseBtn").addEventListener("click", () => {
-  document.getElementById("bagOverlay").classList.remove("show");
+  if (locked) return;
+  closeSheet();
+});
+
+document.getElementById("bagScrim").addEventListener("click", () => {
+  if (locked) return;
+  closeSheet();
 });
 
 document.getElementById("categoryTabs").addEventListener("click", (e) => {
@@ -737,10 +866,10 @@ document.getElementById("categoryTabs").addEventListener("click", (e) => {
   if (!btn) return;
   activeCategory = btn.dataset.category;
   renderTabs();
-  renderCarousel();
+  renderGrid();
 });
 
-document.getElementById("carousel").addEventListener("click", (e) => {
+document.getElementById("productGrid").addEventListener("click", (e) => {
   if (locked) return;
   const btn = e.target.closest("button[data-action]");
   if (!btn) return;
@@ -754,15 +883,19 @@ document.getElementById("carousel").addEventListener("click", (e) => {
 
 document.getElementById("cartList").addEventListener("click", (e) => {
   if (locked) return;
-  const btn = e.target.closest("button[data-action='remove']");
+  const btn = e.target.closest("button[data-action]");
   if (!btn) return;
-  delete cart[btn.dataset.id];
+  const id = btn.dataset.id;
+  const action = btn.dataset.action;
+  if (action === "inc") cart[id] = (cart[id] || 0) + 1;
+  if (action === "dec") cart[id] = Math.max(0, (cart[id] || 0) - 1);
+  if (cart[id] === 0) delete cart[id];
   renderAll();
 });
 
 const SUCCESS_ANIMATION_MS = 1400; // tempo pra animação de check + texto terminarem de rodar
 
-document.getElementById("confirmBtn").addEventListener("click", () => {
+function handleConfirm() {
   if (locked) return;
   locked = true;
 
@@ -784,7 +917,7 @@ document.getElementById("confirmBtn").addEventListener("click", () => {
   const message = { name: "cartCompleted", data: JSON.stringify(payload) };
 
   // Mostra a animação de sucesso e só então avisa o Typebot —
-  // assim o usuário não consegue voltar pra editar o carrinho.
+  // assim o usuário não consegue voltar pra editar a sacola.
   document.getElementById("successOverlay").classList.add("show");
 
   setTimeout(() => {
@@ -795,7 +928,10 @@ document.getElementById("confirmBtn").addEventListener("click", () => {
       console.log("[preview] postMessage que seria enviado:", message);
     }
   }, SUCCESS_ANIMATION_MS);
-});
+}
+
+document.getElementById("confirmBtnMain").addEventListener("click", handleConfirm);
+document.getElementById("confirmBtnSheet").addEventListener("click", handleConfirm);
 
 // Marca visual de que está em modo preview (fora de um iframe)
 if (window.parent === window) {
